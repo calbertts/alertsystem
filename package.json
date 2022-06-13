@@ -1,0 +1,27 @@
+{
+  "name": "alertsystem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "npx eslint . --fix",
+    "test": "jest --coverage"
+  },
+  "author": "calbertts",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.17.12",
+    "@tsconfig/node14": "^1.0.1",
+    "@types/jest": "^28.1.1",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "eslint": "^8.16.0",
+    "jest": "^28.1.0",
+    "jest-ts-auto-mock": "^2.1.0",
+    "ts-auto-mock": "^3.6.2",
+    "ts-jest": "^28.0.4",
+    "ttypescript": "^1.5.13",
+    "typescript": "^4.7.2"
+  }
+}
