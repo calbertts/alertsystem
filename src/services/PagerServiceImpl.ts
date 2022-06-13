@@ -77,7 +77,15 @@ export default class PagerServiceImpl implements PagerService {
   }
 
 
-  private async notify(escalationPolicyTarget:EscalationPolicyTarget, alert:Alert) {
+  /**
+   * Notifies to all targets in the corresponding escalation policy
+   *
+   * @param {EscalationPolicyTarget} escalationPolicyTarget
+   * @param {Alert} alert
+   * @return Promise<void>
+   *
+   */
+  private async notify(escalationPolicyTarget:EscalationPolicyTarget, alert:Alert): Promise<void> {
     const targets:Array<Target> = escalationPolicyTarget.getTargets();
 
     for(const target of targets) {
@@ -117,7 +125,7 @@ export default class PagerServiceImpl implements PagerService {
 
 
   /**
-   * Marks a service as HEALTHY and disables the associated alert
+   * Marks a service as HEALTHY
    *
    * @param {alert} alert
    * @returns Promise<void>
