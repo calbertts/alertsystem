@@ -108,40 +108,6 @@ describe("Pager Service", () => {
       expect(smsSendAlertMock).not.toBeCalled();
       expect(timerAdapterMock.setAcknowledgeTimeout).toBeCalled();
     });
-
-    test("should pass when there's no escalation config available", async () => {
-      const alertStatus:AlertStatus = createMock<AlertStatus>({
-        setAsUnhealthy: jest.fn(),
-      });
-
-      const persistenceAdapterMock:PersistenceAdapter = {
-        getAlertStatus: jest.fn().mockResolvedValue(Promise.resolve(null)),
-        createServiceAlertStatus: jest.fn().mockResolvedValue(Promise.resolve(alertStatus)),
-      } as unknown as PersistenceAdapter;
-
-      const escalationPolicyMock:EscalationPolicy = createMock<EscalationPolicy>({
-        getEscalationPolicyTarget: jest.fn().mockReturnValue(null)
-      });
-
-      const escalationPolicyAdapterMock:EscalationPolicyAdapter = {
-        getEscalationPolicyConfig: jest.fn().mockReturnValue(escalationPolicyMock),
-      } as unknown as EscalationPolicyAdapter;
-
-      const pagerService = createPagerInstance({
-        escalationPolicyAdapterMock,
-        persistenceAdapterMock
-      });
-
-      await pagerService.processAlert({
-        id: "alert1",
-        serviceId: "service1",
-        message: "I'm in trouble"
-      });
-
-      expect(escalationPolicyMock.getEscalationPolicyTarget).toBeCalled();
-      expect(escalationPolicyAdapterMock.getEscalationPolicyConfig).toBeCalled();
-      expect(alertStatus.setAsUnhealthy).not.toBeCalled();
-    });
   });
 
 
@@ -357,6 +323,46 @@ describe("Pager Service", () => {
       expect(alertStatus.setAsAcknowledged).not.toBeCalled();
       expect(processAlertSpy).not.toBeCalled();
       expect(timerAdapterMock.setAcknowledgeTimeout).not.toBeCalled();
+    });
+  });
+
+
+  /**
+   * Case when there's no escalation policies left
+   */
+  describe("Extra scenario", () => {
+    test("should pass when there's no escalation config available", async () => {
+      const alertStatus:AlertStatus = createMock<AlertStatus>({
+        setAsUnhealthy: jest.fn(),
+      });
+
+      const persistenceAdapterMock:PersistenceAdapter = {
+        getAlertStatus: jest.fn().mockResolvedValue(Promise.resolve(null)),
+        createServiceAlertStatus: jest.fn().mockResolvedValue(Promise.resolve(alertStatus)),
+      } as unknown as PersistenceAdapter;
+
+      const escalationPolicyMock:EscalationPolicy = createMock<EscalationPolicy>({
+        getEscalationPolicyTarget: jest.fn().mockReturnValue(null)
+      });
+
+      const escalationPolicyAdapterMock:EscalationPolicyAdapter = {
+        getEscalationPolicyConfig: jest.fn().mockReturnValue(escalationPolicyMock),
+      } as unknown as EscalationPolicyAdapter;
+
+      const pagerService = createPagerInstance({
+        escalationPolicyAdapterMock,
+        persistenceAdapterMock
+      });
+
+      await pagerService.processAlert({
+        id: "alert1",
+        serviceId: "service1",
+        message: "I'm in trouble"
+      });
+
+      expect(escalationPolicyMock.getEscalationPolicyTarget).toBeCalled();
+      expect(escalationPolicyAdapterMock.getEscalationPolicyConfig).toBeCalled();
+      expect(alertStatus.setAsUnhealthy).not.toBeCalled();
     });
   });
 });
